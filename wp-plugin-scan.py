@@ -5,22 +5,22 @@ import re
 import time
 import sys
 
-print '+------------------------------------------------------------------------------------------------------+'
-print '|			__        ______          _             _                                      |'
-print '|			\ \      / /  _ \   _ __ | |_   _  __ _(_)_ __                                 |'
-print "|		 	 \ \ /\ / /| |_) | | '_ \| | | | |/ _` | | '_ \                                |"
-print '|		  	  \ V  V / |  __/  | |_) | | |_| | (_| | | | | |                               |'
-print '|		   	   \_/\_/  |_|     | .__/|_|\__,_|\__, |_|_| |_|                               |'
-print '|		                  	   |_|            |___/                                        |'
-print '|			       ___  ___ __ _ _ __  _ __   ___ _ __                                     |'
-print "|			      / __|/ __/ _` | '_ \| '_ \ / _ \ '__|                                    |"
-print '|			      \__ \ (_| (_| | | | | | | |  __/ |                                       |'   
-print '|			      |___/\___\__,_|_| |_|_| |_|\___|_|                                       |'
-print '|												       |'
-print '| @author hookman                                                                                      |'
-print '| @email hookman.ru[at]gmail.com                                                                       |'
-print '| @version 1.0 											       |'
-print '+------------------------------------------------------------------------------------------------------+'
+print '+----------------------------------------------------+'
+print '|  __        ______          _             _         |'
+print '|  \ \      / /  _ \   _ __ | |_   _  __ _(_)_ __    |'
+print "|   \ \ /\ / /| |_) | | '_ \| | | | |/ _` | | '_ \   |"
+print '|    \ V  V / |  __/  | |_) | | |_| | (_| | | | | |  |'
+print '|     \_/\_/  |_|     | .__/|_|\__,_|\__, |_|_| |_|  |'
+print '|                     |_|            |___/           |'
+print '|       ___  ___ __ _ _ __  _ __   ___ _ __          |'
+print "|      / __|/ __/ _` | '_ \| '_ \ / _ \ '__|         |"
+print '|      \__ \ (_| (_| | | | | | | |  __/ |            |'   
+print '|      |___/\___\__,_|_| |_|_| |_|\___|_|            |'
+print '|                                                    |'
+print '| @author hookman                                    |'
+print '| @email hookman.ru[at]gmail.com                     |'
+print '| @version 1.0                                       |'
+print '+----------------------------------------------------+'
 try:
 	mode = sys.argv[1]
 except IndexError, r:
@@ -63,16 +63,18 @@ elif mode == '-update' and r.match(param):
 		file.write(plugin + '\n')
 	file.close()
 elif mode == '-help':
-	print '+------------------------------------------------------------------------------------------------------+'
-	print '|   Usage: wp-plugin-scan.py [options]                                                                 |'
-	print '|                                                                                                      |'
-	print '|   Options:                                                                                           |'
-	print '|   -help		show this help message and exit                                                |'
-	print '|   -scan URL		scan web site at URL(http://site/ or http://site/wpdir/) for plugins           |'
-	print '|   -update INT		parse INT(pages) at wordpress.org for plugins. They are saved at plugins.txt   |'
-	print '|												       |'
-	print '|   example: ./wp-plugin-scan.py -scan http://wpsite.com/                                              |'
-	print '|   example: ./wp-plugin-scan.py -update 989							       |'
-	print '+------------------------------------------------------------------------------------------------------+'
+	print '+-------------------------------------------------------+'
+	print '|   Usage: wp-plugin-scan.py [options]                  |'
+	print '|                                                       |'
+	print '|   Options:                                            |'
+	print '|   -help        show this help message and exit        |'
+	print '|   -scan URL    scan website at URL(http://site/       |'
+	print '|                or http://site/wpdir/) for plugins     |'
+	print '|   -update INT  parse INT(pages) at wordpress.org for  |'
+	print '|                plugins. They are saved in plugins.txt |'
+	print '|                                                       |'
+	print '|  example: ./wp-plugin-scan.py -scan http://wpsite.com/|'
+	print '|  example: ./wp-plugin-scan.py -update 989             |'
+	print '+-------------------------------------------------------+'
 else:
 	print 'Wrong params!'
