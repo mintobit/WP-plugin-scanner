@@ -21,6 +21,8 @@ print '| @author hookman                                    |'
 print '| @email hookman.ru[at]gmail.com                     |'
 print '| @version 1.0                                       |'
 print '+----------------------------------------------------+'
+
+time.sleep(1)
 try:
 	mode = sys.argv[1]
 except IndexError, r:
@@ -35,15 +37,37 @@ p = re.compile('^http://[a-zA-Z0-9\-\.]+/([a-zA-Z0-9\-]+/)?$')
 r = re.compile('^[0-9]+$')
 if mode == '-scan' and p.match(param):
 	url = param
+	try:
+		if urllib2.urlopen(url).getcode() == 200:
+			print url + ' is alive...'
+			time.sleep(1)
+		else:
+			print url + ' seems to be down...'
+			time.sleep(1)
+			sys.exit()
+	except urllib2.HTTPError, err:
+		print url + ' seems to be down...'
+		time.sleep(1)
+		sys.exit()
+	except urllib2.URLError, err:
+		print url + ' seems to be down...'
+		time.sleep(1)
+		sys.exit()
 	plugins = open('plugins.txt', 'r')
 	print 'Scanning started...'
 	for line in plugins.read().split('\n'):
 		if line:
-			try:
-				code = urllib2.urlopen(url + 'wp-content/plugins/' + line + '/').getcode()
-				print line + '[+]'
-			except urllib2.HTTPError, e:
-				continue
+			success = False
+			while not success:
+				try:
+					code = urllib2.urlopen(url + 'wp-content/plugins/' + line + '/').getcode()
+					print line + '[+]'
+					success = True
+				except urllib2.HTTPError, e:
+					success = True
+				except urllib2.URLError, e:
+					success = False
+				
 
 elif mode == '-update' and r.match(param):
 	pages = int(param) + 1
