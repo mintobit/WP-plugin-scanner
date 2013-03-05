@@ -30,9 +30,9 @@ def _isUrl(url):
 def _isWebsiteAlive(url):
 	try:
 		if urllib.urlopen(url).getcode() == 200:
-			print url + ' is alive...'
+			return True
 		else:
-			print url + ' seems to be down...'
+			return False
 	except IOError as e:
 		print e
 
@@ -56,6 +56,8 @@ def _writePlugins(pluginsList):
 def scan(url):
 	if _isUrl(url) != True:
 		print 'The url you entered should match this pattern ^https?://[\w\d\-\.]+/(([\w\d\-]+/)+)?$'
+		return
+	elif _isWebsiteAlive(url) != True:
 		return
 	print 'Scanning...'
 	currentDir = os.path.dirname(os.path.realpath(__file__)) + os.path.sep
