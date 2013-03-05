@@ -1,104 +1,20 @@
 #!/usr/bin/env python
 
-import urllib2
-import re
-import time
+import argparse
 import sys
+import re
 
-print '+----------------------------------------------------+'
-print '|  __        ______          _             _         |'
-print '|  \ \      / /  _ \   _ __ | |_   _  __ _(_)_ __    |'
-print "|   \ \ /\ / /| |_) | | '_ \| | | | |/ _` | | '_ \   |"
-print '|    \ V  V / |  __/  | |_) | | |_| | (_| | | | | |  |'
-print '|     \_/\_/  |_|     | .__/|_|\__,_|\__, |_|_| |_|  |'
-print '|                     |_|            |___/           |'
-print '|       ___  ___ __ _ _ __  _ __   ___ _ __          |'
-print "|      / __|/ __/ _` | '_ \| '_ \ / _ \ '__|         |"
-print '|      \__ \ (_| (_| | | | | | | |  __/ |            |'   
-print '|      |___/\___\__,_|_| |_|_| |_|\___|_|            |'
-print '|                                                    |'
-print '| @author hookman                                    |'
-print '| @email hookman.ru[at]gmail.com                     |'
-print '| @version 1.0                                       |'
-print '+----------------------------------------------------+'
+argParser = argparse.ArgumentParser()
+argParser.add_argument('-s', '--scan', metavar='<website url>', help='scan website at <website url>')
+argParser.add_argument('-u', '--update', type=int, metavar='<page number>', help='update the list of plugins from wordpress.org up to <page number>')
+args = argParser.parse_args()
 
-time.sleep(1)
-try:
-	mode = sys.argv[1]
-except IndexError, r:
-	mode = ''
+def _argumentsNumber():
+	return len(sys.argv) - 1
 
-try:
-	param = sys.argv[2]
-except IndexError, r:
-	param = ''
-
-p = re.compile('^http://[a-zA-Z0-9\-\.]+/([a-zA-Z0-9\-]+/)?$')
-r = re.compile('^[0-9]+$')
-if mode == '-scan' and p.match(param):
-	url = param
-	try:
-		if urllib2.urlopen(url).getcode() == 200:
-			print url + ' is alive...'
-			time.sleep(1)
-		else:
-			print url + ' seems to be down...'
-			time.sleep(1)
-			sys.exit()
-	except urllib2.HTTPError, err:
-		print url + ' seems to be down...'
-		time.sleep(1)
-		sys.exit()
-	except urllib2.URLError, err:
-		print url + ' seems to be down...'
-		time.sleep(1)
-		sys.exit()
-	plugins = open('plugins.txt', 'r')
-	print 'Scanning started...'
-	for line in plugins.read().split('\n'):
-		if line:
-			success = False
-			while not success:
-				try:
-					code = urllib2.urlopen(url + 'wp-content/plugins/' + line + '/').getcode()
-					print line + '[+]'
-					success = True
-				except urllib2.HTTPError, e:
-					success = True
-				except urllib2.URLError, e:
-					success = False
-				
-
-elif mode == '-update' and r.match(param):
-	pages = int(param) + 1
-	plugins = []
-	print 'Parsing started...'
-	for page in range(1,pages):  
-		html = urllib2.urlopen('http://wordpress.org/extend/plugins/browse/popular/page/' + str(page) + '/').read()
-		pattern = re.compile('<div class="plugin-block">\n\t<h3><a href="http://wordpress.org/extend/plugins/([a-zA-Z0-9\-]+)/')
-		result = pattern.findall(html)
-		for res in result:
-			plugins.append(res)
-			print res + '[+]'
-			time.sleep(0.42)
-
-	file = open('plugins.txt', 'w')
-	for plugin in plugins:
-		file.write(plugin + '\n')
-	file.close()
-elif mode == '-help':
-	print '+-------------------------------------------------------+'
-	print '|   Usage: wp-plugin-scan.py [options]                  |'
-	print '|                                                       |'
-	print '|   Options:                                            |'
-	print '|   -help        show this help message and exit        |'
-	print '|   -scan URL    scan website at URL(http://site/       |'
-	print '|                or http://site/wpdir/) for plugins     |'
-	print '|   -update INT  parse INT(pages) at wordpress.org for  |'
-	print '|                plugins. They are saved in plugins.txt |'
-	print '|                                                       |'
-	print '|  example: ./wp-plugin-scan.py -scan http://wpsite.com/|'
-	print '|  example: ./wp-plugin-scan.py -update 989             |'
-	print '+-------------------------------------------------------+'
-else:
-	print 'Wrong params!'
+def _isUrl(url):
+	pattern = re.compile('^https?://[\w\d\-\.]+/(([\w\d\-]+/)+)?$')
+	if p.match(url):
+		return True
+	else:
+		return False
