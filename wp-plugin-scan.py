@@ -7,13 +7,18 @@ import urllib
 import lxml.html
 import os
 
-argParser = argparse.ArgumentParser()
-argParser.add_argument('-s', '--scan', metavar='<website url>', dest='url', help='scan website at <website url>')
-argParser.add_argument('-u', '--update', type=int, metavar='<page number>', dest='pageN', help='update the list of plugins from wordpress.org up to <page number>')
-args = argParser.parse_args()
-
-def _argumentsNumber():
-	return len(sys.argv) - 1
+def _main():
+	argParser = argparse.ArgumentParser()
+	argParser.add_argument('-s', '--scan', metavar='<website url>', dest='url', help='scan website at <website url>')
+	argParser.add_argument('-u', '--update', type=int, metavar='<page number>', dest='pageN', help='update the list of plugins from wordpress.org up to <page number>')
+	args = argParser.parse_args()
+	
+	if args.url == args.pageN == None:
+		argParser.print_help()
+	elif args.url != None:
+		scan(args.url)
+	else:
+		update(args.pageN)
 
 def _isUrl(url):
 	pattern = re.compile('^https?://[\w\d\-\.]+/(([\w\d\-]+/)+)?$')
@@ -30,6 +35,23 @@ def _isWebsiteAlive(url):
 			print url + ' seems to be down...'
 	except IOError as e:
 		print e
+
+def _parseHrefs(html):
+	doc = lxml.html.document_fromstring(html)
+	pattern = re.compile('/plugins/([\w\d\-]+)/')
+	pluginsList = []
+	links = doc.cssselect('div.plugin-block h3 a')
+	for link in links:
+		plugin = pattern.search(link.get('href')).group(1)
+		pluginsList.append(plugin)
+		print plugin + '[+]'
+	return pluginsList
+
+def _writePlugins(pluginsList):
+	currentDir = os.path.dirname(os.path.realpath(__file__)) + os.path.sep
+	pluginsFile = open(currentDir + 'plugins.txt', 'w')
+	pluginsFile.write('\n'.join(pluginsList))
+	pluginsFile.close()
 
 def scan(url):
 	currentDir = os.path.dirname(os.path.realpath(__file__)) + os.path.sep
@@ -59,19 +81,4 @@ def update(pageN):
 			pluginsList = pluginsList + _parseHrefs(html)
 	_writePlugins(pluginsList)
 
-def _parseHrefs(html):
-	doc = lxml.html.document_fromstring(html)
-	pattern = re.compile('/plugins/([\w\d\-]+)/')
-	pluginsList = []
-	links = doc.cssselect('div.plugin-block h3 a')
-	for link in links:
-		plugin = pattern.search(link.get('href')).group(1)
-		pluginsList.append(plugin)
-		print plugin + '[+]'
-	return pluginsList
-
-def _writePlugins(pluginsList):
-	currentDir = os.path.dirname(os.path.realpath(__file__)) + os.path.sep
-	pluginsFile = open(currentDir + 'plugins.txt', 'w')
-	pluginsFile.write('\n'.join(pluginsList))
-	pluginsFile.close()
+if __name__ == "__main__": _main()
