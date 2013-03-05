@@ -12,13 +12,15 @@ def _main():
 	argParser.add_argument('-s', '--scan', metavar='<website url>', dest='url', help='scan website at <website url>')
 	argParser.add_argument('-u', '--update', type=int, metavar='<page number>', dest='pageN', help='update the list of plugins from wordpress.org up to <page number>')
 	args = argParser.parse_args()
-	
-	if args.url == args.pageN == None:
-		argParser.print_help()
-	elif args.url != None:
-		scan(args.url)
-	else:
-		update(args.pageN)
+	try:
+		if args.url == args.pageN == None:
+			argParser.print_help()
+		elif args.url != None:
+			scan(args.url)
+		else:
+			update(args.pageN)
+	except IOError as e:
+		print e
 
 def _isUrl(url):
 	pattern = re.compile('^https?://[\w\d\-\.]+/(([\w\d\-]+/)+)?$')
@@ -28,13 +30,10 @@ def _isUrl(url):
 		return False
 
 def _isWebsiteAlive(url):
-	try:
-		if urllib.urlopen(url).getcode() == 200:
-			return True
-		else:
-			return False
-	except IOError as e:
-		print e
+	if urllib.urlopen(url).getcode() == 200:
+		return True
+	else:
+		return False
 
 def _parseHrefs(html):
 	doc = lxml.html.document_fromstring(html)
@@ -61,15 +60,12 @@ def scan(url):
 		return
 	print 'Scanning...'
 	currentDir = os.path.dirname(os.path.realpath(__file__)) + os.path.sep
-	try:
-		pluginsFile = open(currentDir + 'plugins.txt', 'r')
-		for line in pluginsFile.read().split('\n'):
-			if line:
-				code = urllib.urlopen(url + 'wp-content/plugins/' + line + '/').getcode()
-				if code != 404:
-					print line + '[+]'
-	except IOError as e:
-		print e
+	pluginsFile = open(currentDir + 'plugins.txt', 'r')
+	for line in pluginsFile.read().split('\n'):
+		if line:
+			code = urllib.urlopen(url + 'wp-content/plugins/' + line + '/').getcode()
+			if code != 404:
+				print line + '[+]'
 
 def update(pageN):
 	pluginsList = []
