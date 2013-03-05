@@ -8,7 +8,7 @@ import lxml.html
 import os
 
 def _main():
-	argParser = argparse.ArgumentParser()
+	argParser = argparse.ArgumentParser(description='Scan any wordpress powered website and identify plugins installed')
 	argParser.add_argument('-s', '--scan', metavar='<website url>', dest='url', help='scan website at <website url>')
 	argParser.add_argument('-u', '--update', type=int, metavar='<page number>', dest='pageN', help='update the list of plugins from wordpress.org up to <page number>')
 	args = argParser.parse_args()
