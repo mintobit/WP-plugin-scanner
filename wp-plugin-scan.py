@@ -54,6 +54,10 @@ def _writePlugins(pluginsList):
 	pluginsFile.close()
 
 def scan(url):
+	if _isUrl(url) != True:
+		print 'The url you entered should match this pattern ^https?://[\w\d\-\.]+/(([\w\d\-]+/)+)?$'
+		return
+	print 'Scanning...'
 	currentDir = os.path.dirname(os.path.realpath(__file__)) + os.path.sep
 	try:
 		pluginsFile = open(currentDir + 'plugins.txt', 'r')
