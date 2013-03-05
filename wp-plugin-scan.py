@@ -79,7 +79,7 @@ def update(pageN):
 		pluginsList = pluginsList + _parseHrefs(html)
 	else:
 		for page in range(2, pageN):
-			html = urllib.urlopen('http://wordpress.org/extend/plugins/browse/popular/page/' + str(pageN) + '/').read()
+			html = urllib.urlopen('http://wordpress.org/extend/plugins/browse/popular/page/' + str(page) + '/').read()
 			pluginsList = pluginsList + _parseHrefs(html)
 	_writePlugins(pluginsList)
 
