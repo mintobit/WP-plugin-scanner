@@ -1,5 +1,5 @@
 # WP-plugin-scanner
-WP-plugin-scanner is a tool to list plugins installed on a wordpress powered website
+Scan any wordpress-powered website and find out which plugins it is using
 
 ##Requirements
 + [`lxml`](http://lxml.de/) is the most feature-rich and easy-to-use library for processing XML and HTML in the Python language.
